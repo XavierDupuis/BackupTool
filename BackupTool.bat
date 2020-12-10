@@ -1,3 +1,5 @@
+:::BACKUP TOOL USED TO SYNC USEFUL DATA TO EXTERNAL HARD DRIVE
+
 @echo off
 mode con:cols=100 lines=20
 Title Backup
@@ -49,40 +51,57 @@ set LOGFILE="%BACKUPLOG%\Backup_%date%-[%TimeStart%].log"
 :: DISPATCHING TO DIFFERENT DOMAINS
 :DISPATCH
 REM echo %count%
+set total=6
 if %count%==0 set DOMAIN=DOCUMENTS
-if %count%==1 set DOMAIN=MUSIQUE
-if %count%==2 goto DONE
+if %count%==1 set DOMAIN=DESKTOP
+if %count%==2 set DOMAIN=ONEDRIVE
+if %count%==3 set DOMAIN=MUSIC
+if %count%==4 set DOMAIN=VIDEOS
+if %count%==5 set DOMAIN=PICTURES
+if %count%==%total% goto DONE
+set INPUTDIR="%USERPROFILE%\%DOMAIN%"
 set OUTPUTDIR="%BACKUPFOLDER%\[%DOMAIN%]"
 set /a count=%count%+1
 goto :%DOMAIN%
 
 :DOCUMENTS
-set INPUTDIR="C:\Users\Xavier\Documents"
 goto COPYMIRROR
 
-:MUSIQUE
-set INPUTDIR="C:\Users\Xavier\Music"
+:DESKTOP
+goto COPY
+
+:MUSIC
+goto COPYMIRROR
+
+:ONEDRIVE
+cd /d %LOCALAPPDATA%\Microsoft\OneDrive
+OneDrive.exe /shutdown
+timeout 3
+cd /d %USERPROFILE%
 goto COPYMIRROR
 
 :VIDEOS
+goto COPYMIRROR
 
+:PICTURES
+goto COPYMIRROR
 
 :: PURE COPY (ADDING TO BACKUP)
 :COPY
-Title Backing up %DOMAIN% (%count%/3)
+Title Backing up %DOMAIN% (%count%/%total%)
 echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
-robocopy %INPUTDIR% %OUTPUTDIR% /E /W:1 /R:100 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
+robocopy %INPUTDIR% %OUTPUTDIR% /E /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
 goto DISPATCH
 
 :: MIRROR COPY (REPLACING CURRENT BACKUP)
 :COPYMIRROR
-Title Backing up %DOMAIN% (%count%/3)
+Title Backing up %DOMAIN% (%count%/%total%)
 echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
-robocopy %INPUTDIR% %OUTPUTDIR% /MIR /W:1 /R:100 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
+robocopy %INPUTDIR% %OUTPUTDIR% /MIR /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
 goto DISPATCH
 
 :: END
@@ -90,6 +109,13 @@ goto DISPATCH
 cls
 echo.
 Title Backup Done
+
+echo.
+echo ===================================================================================================
+echo =============                             BACKUP COMPLETED                            =============
+echo ===================================================================================================
+echo.
+
 if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
 set TimeEnd=%Hour%.%TIME:~3,2%.%TIME:~6,2%
 ::TIME ELAPSED
@@ -103,7 +129,14 @@ if %MinutesElapsed% LSS 0 (
 	set /a MinutesElapsed=%MinutesElapsed%+60
 	set /a HoursElapsed=%HoursElapsed%-1)
 if %HoursElapsed% LSS 0 (set /a HoursElapsed=%HoursElapsed%+24)
+
 echo.
+echo. >> %LOGFILE%
+echo =================================================================================================== >> %LOGFILE%
+echo Started    : %date% %TimeStart% >> %LOGFILE%
+echo Completed  : %date% %TimeEnd% >> %LOGFILE%
+echo Elapsed    : %HoursElapsed% hours %MinutesElapsed% minutes %SecondsElapsed% seconds  >> %LOGFILE%
+echo =================================================================================================== >> %LOGFILE%
 echo ===================================================================================================
 echo Started    : %date% %TimeStart%
 echo Completed  : %date% %TimeEnd%
@@ -112,5 +145,11 @@ echo ===========================================================================
 echo.
 echo Log file saved at "%BACKUPLOG%"
 echo.
-pause 
+
+::(RESTARTING ONEDRIVE SYNC SERVICE)
+cd /d %LOCALAPPDATA%\Microsoft\OneDrive
+start Onedrive.exe
+cd /d %USERPROFILE%
+
+pause
 exit
