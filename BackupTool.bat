@@ -137,13 +137,16 @@ echo Started    : %date% %TimeStart% >> %LOGFILE%
 echo Completed  : %date% %TimeEnd% >> %LOGFILE%
 echo Elapsed    : %HoursElapsed% hours %MinutesElapsed% minutes %SecondsElapsed% seconds  >> %LOGFILE%
 echo =================================================================================================== >> %LOGFILE%
+cd /d %BACKUPLOG%
+del latest.log
+copy %LOGFILE% latest.log
 echo ===================================================================================================
 echo Started    : %date% %TimeStart%
 echo Completed  : %date% %TimeEnd%
 echo Elapsed    : %HoursElapsed% hours %MinutesElapsed% minutes %SecondsElapsed% seconds 
 echo ===================================================================================================
 echo.
-echo Log file saved at "%BACKUPLOG%"
+echo Log file saved at "%BACKUPLOG%" (latest.log)
 echo.
 
 ::(RESTARTING ONEDRIVE SYNC SERVICE)
