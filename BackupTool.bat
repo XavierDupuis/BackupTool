@@ -1,12 +1,31 @@
 :::BACKUP TOOL USED TO SYNC USEFUL DATA TO EXTERNAL HARD DRIVE
 
-@echo off
+echo off
 mode con:cols=100 lines=20
 Title Backup
 
+:: READING CUSTOM USER INPUTS
+set DEFAULT_DESTINATION_DRIVE=F
+set DEFAULT_SOURCE_DIRECTORY=%userprofile%
+if exist "profile" (
+	cd profile
+    set /p DESTINATION_DRIVE=<DESTINATION_DRIVE.txt
+    set /p SOURCE_DIRECTORY=<SOURCE_DIRECTORY.txt
+    cd ..
+    ) ELSE (
+    set /p DESTINATION_DRIVE=%DEFAULT_DESTINATION_DRIVE%
+    set /p SOURCE_DIRECTORY=%DEFAULT_SOURCE_DIRECTORY%
+)
+if [%DESTINATION_DRIVE%]==[] (
+    set DESTINATION_DRIVE=%DEFAULT_DESTINATION_DRIVE%
+)
+if [%SOURCE_DIRECTORY%]==[] (
+    set SOURCE_DIRECTORY=%DEFAULT_SOURCE_DIRECTORY%
+)
+
 echo.
 echo ===================================================================================================
-echo =============          Proceed for Backup? (Default Backup Drive set to F:\)          =============
+echo =============              Proceed for Backup? (Backup Drive set to %DESTINATION_DRIVE%:\)              =============
 echo ===================================================================================================
 echo.
 Pause
@@ -15,8 +34,7 @@ Pause
 set count=0
 
 :: SETTING BACKUP LOCATION AND LOG FOLDER LOCATION
-set DRIVE=F
-set BACKUPFOLDER=%DRIVE%:\!BACKUPDATA
+set BACKUPFOLDER=%DESTINATION_DRIVE%:\!BACKUPDATA
 set BACKUPLOG=%BACKUPFOLDER%\!LOGS
 REM set BACKUPFOLDER=%cd%
 REM set BACKUPLOG=%cd%
@@ -33,8 +51,8 @@ if exist "%BACKUPFOLDER%" (
 	goto NEWDRIVE)
 :NEWDRIVE
 echo [Enter new drive letter]
-set /p DRIVE=
-set BACKUPFOLDER=%DRIVE%:\!BACKUPDATA
+set /p DESTINATION_DRIVE=
+set BACKUPFOLDER=%DESTINATION_DRIVE%:\!BACKUPDATA
 set BACKUPLOG=%BACKUPFOLDER%\!LOGS
 echo.
 pause
@@ -59,7 +77,9 @@ if %count%==3 set DOMAIN=MUSIC
 if %count%==4 set DOMAIN=VIDEOS
 if %count%==5 set DOMAIN=PICTURES
 if %count%==%total% goto DONE
-set INPUTDIR="%USERPROFILE%\%DOMAIN%"
+set INPUTDIR="%SOURCE_DIRECTORY%\%DOMAIN%"
+echo %INPUTDIR%
+pause
 set OUTPUTDIR="%BACKUPFOLDER%\[%DOMAIN%]"
 set /a count=%count%+1
 goto :%DOMAIN%
@@ -77,7 +97,7 @@ goto COPYMIRROR
 cd /d %LOCALAPPDATA%\Microsoft\OneDrive
 OneDrive.exe /shutdown
 timeout 3
-cd /d %USERPROFILE%
+cd /d %SOURCE_DIRECTORY%
 goto COPYMIRROR
 
 :VIDEOS
