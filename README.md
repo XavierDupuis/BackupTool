@@ -8,7 +8,7 @@ Should be formated as such :
 ```
 K
 ```
-(Uppercase letter)
+An uppercase letter
 Let void for default drive letter (F)
 
 ### SOURCE_DIRECTORY.txt
@@ -17,7 +17,7 @@ Should be formated as such :
 ```
 C:/Users/LoremIpsum
 ```
-(windows file s)
+Follows Windows file system guideline
 Let void for default source directory (%userprofile%)
 
 ## License
