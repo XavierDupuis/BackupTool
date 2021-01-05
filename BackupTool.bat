@@ -32,8 +32,6 @@ echo ===========================================================================
 echo.
 Pause
 
-:: SETTING COUNT OF DOMAINS
-set count=0
 
 :: SETTING BACKUP LOCATION AND LOG FOLDER LOCATION
 set BACKUPFOLDER=%DESTINATION_DRIVE%:\!BACKUPDATA
@@ -72,6 +70,7 @@ set TimeStart=%Hour%.%TIME:~3,2%.%TIME:~6,2%
 set LOGFILE="%BACKUPLOG%\Backup_%date%-[%TimeStart%].log"
 
 :: DISPATCHING TO DIFFERENT DOMAINS
+set count=0
 :DISPATCH
 set total=6
 if %count%==0 set DOMAIN=DOCUMENTS
@@ -171,7 +170,7 @@ echo.
 echo Log file saved at "%BACKUPLOG%" (latest.log)
 echo.
 
-::(RESTARTING ONEDRIVE SYNC SERVICE)
+::RESTARTING ONEDRIVE SYNC SERVICE
 cd /d %LOCALAPPDATA%\Microsoft\OneDrive
 start Onedrive.exe
 cd /d %USERPROFILE%
