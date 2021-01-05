@@ -1,5 +1,6 @@
-:::BACKUP TOOL USED TO SYNC USEFUL DATA TO EXTERNAL HARD DRIVE
+::: BACKUP TOOL USED TO SYNC USEFUL DATA TO EXTERNAL HARD DRIVE
 
+:: USER INTERFACE
 echo off
 mode con:cols=100 lines=20
 Title Backup
@@ -23,6 +24,7 @@ if [%SOURCE_DIRECTORY%]==[] (
     set SOURCE_DIRECTORY=%DEFAULT_SOURCE_DIRECTORY%
 )
 
+:: HEADER
 echo.
 echo ===================================================================================================
 echo =============              Proceed for Backup? (Backup Drive set to %DESTINATION_DRIVE%:\)              =============
@@ -42,6 +44,9 @@ REM set BACKUPLOG=%cd%
 :: CONFIRM BACKUP LOCATION && PROMPT RETRYING
 :DRIVEEXIST
 if exist "%BACKUPFOLDER%" (
+	if NOT exist "%BACKUPLOG%" (
+		mkdir %BACKUPLOG%
+	)
 	goto BEGIN) ELSE (
 	cls
 	echo.
@@ -68,7 +73,6 @@ set LOGFILE="%BACKUPLOG%\Backup_%date%-[%TimeStart%].log"
 
 :: DISPATCHING TO DIFFERENT DOMAINS
 :DISPATCH
-REM echo %count%
 set total=6
 if %count%==0 set DOMAIN=DOCUMENTS
 if %count%==1 set DOMAIN=DESKTOP
@@ -78,8 +82,6 @@ if %count%==4 set DOMAIN=VIDEOS
 if %count%==5 set DOMAIN=PICTURES
 if %count%==%total% goto DONE
 set INPUTDIR="%SOURCE_DIRECTORY%\%DOMAIN%"
-echo %INPUTDIR%
-pause
 set OUTPUTDIR="%BACKUPFOLDER%\[%DOMAIN%]"
 set /a count=%count%+1
 goto :%DOMAIN%
