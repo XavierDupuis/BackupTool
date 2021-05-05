@@ -99,7 +99,7 @@ cd /d %LOCALAPPDATA%\Microsoft\OneDrive
 OneDrive.exe /shutdown
 timeout 3
 cd /d %SOURCE_DIRECTORY%
-goto COPYMIRROR
+goto COPY
 
 :VIDEOS
 goto COPYMIRROR
