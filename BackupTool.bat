@@ -188,7 +188,3 @@ cd /d %USERPROFILE%
 
 pause
 exit
-
-:remove_leading_zeros
-SET /a %1 = 1%1-(11%1-1%1)/10
-EXIT /B
