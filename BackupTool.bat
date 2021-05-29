@@ -65,8 +65,6 @@ goto DRIVEEXIST
 :BEGIN
 cls
 :: SETTING STARTING BACKUP TIME
-REM if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
-REM set TimeStart=%Hour%.%TIME:~3,2%.%TIME:~6,2%
 set "TimeStart=%time: =0%"
 set "TimeStart=%TimeStart::=.%"
 set "TimeStart=%TimeStart:~0,8%"
@@ -119,7 +117,6 @@ echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
 robocopy %INPUTDIR% %OUTPUTDIR% /E /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
-pause
 goto DISPATCH
 
 :: MIRROR COPY (REPLACING CURRENT BACKUP)
@@ -129,7 +126,6 @@ echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
 robocopy %INPUTDIR% %OUTPUTDIR% /MIR /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
-pause
 goto DISPATCH
 
 :: END
@@ -144,8 +140,6 @@ echo =============                             BACKUP COMPLETED                 
 echo ===================================================================================================
 echo.
 
-REM if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
-REM set TimeEnd=%Hour%.%TIME:~3,2%.%TIME:~6,2%
 set "TimeEnd=%time: =0%"
 set "TimeEnd=%TimeEnd::=.%"
 set "TimeEnd=%TimeEnd:~0,8%"
