@@ -46,12 +46,13 @@ if exist "%BACKUPFOLDER%" (
 		mkdir %BACKUPLOG%
 	)
 	goto BEGIN) ELSE (
-	cls
-	echo.
-	echo No Backup location was found
-	echo %BACKUPFOLDER:~0,3% drive not available
-	echo.
-	goto NEWDRIVE)
+		cls
+		echo.
+		echo No Backup location was found
+		echo Error : %BACKUPFOLDER:~0,3% drive not available
+		echo 	Connect "%BACKUPFOLDER:~0,3%" drive or create "%BACKUPFOLDER:~0,3%!BACKUPDATA" folder
+		echo.
+		goto NEWDRIVE)
 :NEWDRIVE
 echo [Enter new drive letter]
 set /p DESTINATION_DRIVE=
@@ -64,8 +65,12 @@ goto DRIVEEXIST
 :BEGIN
 cls
 :: SETTING STARTING BACKUP TIME
-if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
-set TimeStart=%Hour%.%TIME:~3,2%.%TIME:~6,2%
+REM if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
+REM set TimeStart=%Hour%.%TIME:~3,2%.%TIME:~6,2%
+set "TimeStart=%time: =0%"
+set "TimeStart=%TimeStart::=.%"
+set "TimeStart=%TimeStart:~0,8%"
+
 :: SETTING BACKUP LOG FILE LOCATION
 set LOGFILE="%BACKUPLOG%\Backup_%date%-[%TimeStart%].log"
 
@@ -114,6 +119,7 @@ echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
 robocopy %INPUTDIR% %OUTPUTDIR% /E /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
+pause
 goto DISPATCH
 
 :: MIRROR COPY (REPLACING CURRENT BACKUP)
@@ -123,6 +129,7 @@ echo. >> %LOGFILE%
 echo =================================  %DOMAIN%  ================================== >> %LOGFILE%
 echo. >> %LOGFILE%
 robocopy %INPUTDIR% %OUTPUTDIR% /MIR /W:0 /R:10 /ETA /TEE /XJ /XJD /X /V /NJH /LOG+:%LOGFILE%
+pause
 goto DISPATCH
 
 :: END
@@ -137,12 +144,23 @@ echo =============                             BACKUP COMPLETED                 
 echo ===================================================================================================
 echo.
 
-if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
-set TimeEnd=%Hour%.%TIME:~3,2%.%TIME:~6,2%
+REM if %TIME:~0,2% LSS 10 (set Hour=0%TIME:~1,1%) ELSE (set Hour=%TIME:~0,2%)
+REM set TimeEnd=%Hour%.%TIME:~3,2%.%TIME:~6,2%
+set "TimeEnd=%time: =0%"
+set "TimeEnd=%TimeEnd::=.%"
+set "TimeEnd=%TimeEnd:~0,8%"
+
 ::TIME ELAPSED
-set /a SecondsElapsed=%TimeEnd:~6,2%-%TimeStart:~6,2%
-set /a MinutesElapsed=%TimeEnd:~3,2%-%TimeStart:~3,2%
-set /a HoursElapsed=%TimeEnd:~0,2%-%TimeStart:~0,2%
+if %TimeStart:~6,1% == 0 (set SecondsStart=%TimeStart:~7,1%) else (set SecondsStart=%TimeStart:~6,2%)
+if %TimeEnd:~6,1% == 0   (set SecondsEnd=%TimeEnd:~7,1%)     else (set SecondsEnd=%TimeEnd:~6,2%)
+set /a SecondsElapsed=SecondsEnd-SecondsStart
+if %TimeStart:~3,1% == 0 (set MinutesStart=%TimeStart:~4,1%) else (set MinutesStart=%TimeStart:~3,2%)
+if %TimeEnd:~3,1% == 0   (set MinutesEnd=%TimeEnd:~4,1%)     else (set MinutesEnd=%TimeEnd:~3,2%)
+set /a MinutesElapsed=MinutesEnd-MinutesStart
+if %TimeStart:~0,1% == 0 (set HoursStart=%TimeStart:~1,1%) else (set HoursStart=%TimeStart:~0,2%)
+if %TimeEnd:~0,1% == 0   (set HoursEnd=%TimeEnd:~1,1%)     else (set HoursEnd=%TimeEnd:~0,2%)
+set /a HoursElapsed=HoursEnd-HoursStart
+ 
 if %SecondsElapsed% LSS 0 (
 	set /a SecondsElapsed=%SecondsElapsed%+60
 	set /a MinutesElapsed=%MinutesElapsed%-1)
@@ -177,3 +195,7 @@ cd /d %USERPROFILE%
 
 pause
 exit
+
+:remove_leading_zeros
+SET /a %1 = 1%1-(11%1-1%1)/10
+EXIT /B
