@@ -154,7 +154,6 @@ set /a MinutesElapsed=MinutesEnd-MinutesStart
 if %TimeStart:~0,1% == 0 (set HoursStart=%TimeStart:~1,1%) else (set HoursStart=%TimeStart:~0,2%)
 if %TimeEnd:~0,1% == 0   (set HoursEnd=%TimeEnd:~1,1%)     else (set HoursEnd=%TimeEnd:~0,2%)
 set /a HoursElapsed=HoursEnd-HoursStart
- 
 if %SecondsElapsed% LSS 0 (
 	set /a SecondsElapsed=%SecondsElapsed%+60
 	set /a MinutesElapsed=%MinutesElapsed%-1)
@@ -168,7 +167,7 @@ echo. >> %LOGFILE%
 echo =================================================================================================== >> %LOGFILE%
 echo Started    : %date% %TimeStart% >> %LOGFILE%
 echo Completed  : %date% %TimeEnd% >> %LOGFILE%
-echo Elapsed    : %HoursElapsed% hours %MinutesElapsed% minutes %SecondsElapsed% seconds  >> %LOGFILE%
+echo Elapsed    : %HoursElapsed% hour(s) %MinutesElapsed% minute(s) %SecondsElapsed% second(s)  >> %LOGFILE%
 echo =================================================================================================== >> %LOGFILE%
 cd /d %BACKUPLOG%
 del latest.log
@@ -176,7 +175,7 @@ copy %LOGFILE% latest.log
 echo ===================================================================================================
 echo Started    : %date% %TimeStart%
 echo Completed  : %date% %TimeEnd%
-echo Elapsed    : %HoursElapsed% hours %MinutesElapsed% minutes %SecondsElapsed% seconds 
+echo Elapsed    : %HoursElapsed% hour(s) %MinutesElapsed% minute(s) %SecondsElapsed% second(s) 
 echo ===================================================================================================
 echo.
 echo Log file saved at "%BACKUPLOG%" (latest.log)
