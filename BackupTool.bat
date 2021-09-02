@@ -49,13 +49,16 @@ if exist "%BACKUPFOLDER%" (
 		cls
 		echo.
 		echo No Backup location was found
-		echo Error : %BACKUPFOLDER:~0,3% drive not available
-		echo 	Connect "%BACKUPFOLDER:~0,3%" drive or create "%BACKUPFOLDER:~0,3%!BACKUPDATA" folder
+		echo Error : "%BACKUPFOLDER:~0,3%" drive not available
+		echo Solutions : 
+		echo 	Connect "%BACKUPFOLDER:~0,3%" drive
+		echo 	Create "%BACKUPFOLDER:~0,3%!BACKUPDATA" folder
+		echo 	Enter another drive letter
 		echo.
 		goto NEWDRIVE)
 :NEWDRIVE
 echo [Enter new drive letter]
-set /p DESTINATION_DRIVE=
+set /p DESTINATION_DRIVE=^> 
 set BACKUPFOLDER=%DESTINATION_DRIVE%:\!BACKUPDATA
 set BACKUPLOG=%BACKUPFOLDER%\!LOGS
 echo.
@@ -71,6 +74,18 @@ set "TimeStart=%TimeStart:~0,8%"
 
 :: SETTING BACKUP LOG FILE LOCATION
 set LOGFILE="%BACKUPLOG%\Backup_%date%-[%TimeStart%].log"
+set HISTORYLOGFILE="%BACKUPLOG%\!HISTORY.log"
+
+:: BACKUP COMMENT PROMPT
+echo [Specify backup reason (default = undefined)]
+set BACKUP_REASON=
+set /p "BACKUP_REASON=> "
+IF "%BACKUP_REASON%"=="" (
+	set BACKUP_REASON=undefined
+)
+echo %BACKUP_REASON%
+echo %date%-[%TimeStart%]> %HISTORYLOGFILE% : %BACKUP_REASON%
+
 
 :: DISPATCHING TO DIFFERENT DOMAINS
 set count=0
