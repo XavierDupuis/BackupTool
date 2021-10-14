@@ -84,7 +84,7 @@ IF "%BACKUP_REASON%"=="" (
 	set BACKUP_REASON=undefined
 )
 echo %BACKUP_REASON%
-echo %date%-[%TimeStart%]> %HISTORYLOGFILE% : %BACKUP_REASON%
+echo %date%-[%TimeStart%] >> %HISTORYLOGFILE% : %BACKUP_REASON%
 
 
 :: DISPATCHING TO DIFFERENT DOMAINS
