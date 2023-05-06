@@ -112,7 +112,7 @@ goto COPY
 goto COPYMIRROR
 
 :ONEDRIVE
-cd /d %LOCALAPPDATA%\Microsoft\OneDrive
+cd /d "C:\Program Files\Microsoft OneDrive"
 OneDrive.exe /shutdown
 timeout 3
 cd /d %SOURCE_DIRECTORY%
@@ -196,7 +196,7 @@ echo Log file saved at "%BACKUPLOG%" (latest.log)
 echo.
 
 ::RESTARTING ONEDRIVE SYNC SERVICE
-cd /d %LOCALAPPDATA%\Microsoft\OneDrive
+cd /d "C:\Program Files\Microsoft OneDrive"
 start Onedrive.exe
 cd /d %USERPROFILE%
 
