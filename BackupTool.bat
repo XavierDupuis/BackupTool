@@ -92,10 +92,10 @@ set count=0
 set total=6
 if %count%==0 set DOMAIN=DOCUMENTS
 if %count%==1 set DOMAIN=DESKTOP
-if %count%==2 set DOMAIN=ONEDRIVE
-if %count%==3 set DOMAIN=MUSIC
-if %count%==4 set DOMAIN=VIDEOS
-if %count%==5 set DOMAIN=PICTURES
+@REM if %count%==2 set DOMAIN=ONEDRIVE
+if %count%==2 set DOMAIN=MUSIC
+if %count%==3 set DOMAIN=VIDEOS
+if %count%==4 set DOMAIN=PICTURES
 if %count%==%total% goto DONE
 set INPUTDIR="%SOURCE_DIRECTORY%\%DOMAIN%"
 set OUTPUTDIR="%BACKUPFOLDER%\[%DOMAIN%]"
@@ -111,12 +111,12 @@ goto COPY
 :MUSIC
 goto COPYMIRROR
 
-:ONEDRIVE
-cd /d "C:\Program Files\Microsoft OneDrive"
-OneDrive.exe /shutdown
-timeout 3
-cd /d %SOURCE_DIRECTORY%
-goto COPY
+@REM :ONEDRIVE
+@REM cd /d "C:\Program Files\Microsoft OneDrive"
+@REM OneDrive.exe /shutdown
+@REM timeout 3
+@REM cd /d %SOURCE_DIRECTORY%
+@REM goto COPY
 
 :VIDEOS
 goto COPYMIRROR
@@ -196,9 +196,9 @@ echo Log file saved at "%BACKUPLOG%" (latest.log)
 echo.
 
 ::RESTARTING ONEDRIVE SYNC SERVICE
-cd /d "C:\Program Files\Microsoft OneDrive"
-start Onedrive.exe
-cd /d %USERPROFILE%
+@REM cd /d "C:\Program Files\Microsoft OneDrive"
+@REM start Onedrive.exe
+@REM cd /d %USERPROFILE%
 
 pause
 exit
